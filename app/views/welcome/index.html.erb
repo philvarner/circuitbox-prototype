@@ -1,0 +1,7 @@
+<h1>CircuitBox Prototype</h1>
+<p>
+  <%= @elapsed %>
+  <%= @response&.success? %>
+  <%= @response&.status %>
+  <%= @response&.body[0..100] if @response&.body.present?%>
+</p>
