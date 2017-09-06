@@ -1,0 +1,74 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "ECR Repo for Docker container images.",
+  "Parameters": {
+    "ServiceName": {
+      "Type": "String",
+      "Description": "The name of the service for which the repository exists."
+    },
+    "IAMARN": {
+      "Type": "String",
+      "Description": "Use the full ARN for the IAM user or account allowed to push images "
+    }
+  },
+  "Resources": {
+    "MyRepository": {
+      "Type": "AWS::ECR::Repository",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RepositoryName": {
+          "Fn::Sub": "locus-health/${ServiceName}"
+        }
+      },
+      "RepositoryPolicyText": {
+        "Version": "2008-10-17",
+        "Statement": [
+          {
+            "Sid": "AllowPull",
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": [
+                {
+                  "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:root"
+                }
+              ]
+            },
+            "Action": [
+              "ecr:GetDownloadUrlForLayer",
+              "ecr:BatchGetImage",
+              "ecr:BatchCheckLayerAvailability",
+              "ecr:InitiateLayerUpload"
+            ]
+          },
+          {
+            "Sid": "AllowPushPull",
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": [
+                {
+                  "Ref": "IAMARN"
+                }
+              ]
+            },
+            "Action": [
+              "ecr:GetDownloadUrlForLayer",
+              "ecr:BatchGetImage",
+              "ecr:BatchCheckLayerAvailability",
+              "ecr:PutImage",
+              "ecr:InitiateLayerUpload",
+              "ecr:UploadLayerPart",
+              "ecr:CompleteLayerUpload"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "ECSRepository": {
+      "Value": {
+        "Ref": "MyRepository"
+      }
+    }
+  }
+}
