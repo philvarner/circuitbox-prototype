@@ -3,11 +3,11 @@ version: 0.2
 phases:
   pre_build:
     commands:
+      - echo Built with $CODEBUILD_SOURCE_VERSION
       - echo Logging in to Amazon ECR...
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION)
   build:
     commands:
-      - echo Built with $CODEBUILD_SOURCE_VERSION
       - echo Build started on `date`
       - echo Building the Docker image...          
       - docker build -t $IMAGE_REPO_NAME .
