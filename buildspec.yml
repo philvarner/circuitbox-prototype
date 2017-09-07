@@ -4,6 +4,7 @@ phases:
   pre_build:
     commands:
       - echo Built with $CODEBUILD_SOURCE_VERSION
+      - echo Built with $CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Logging in to Amazon ECR...
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION)
   build:
